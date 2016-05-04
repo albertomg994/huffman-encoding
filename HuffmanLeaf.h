@@ -37,7 +37,7 @@ public:
      * Returns a string representation of tree's inorder traversal
      * NOTE: since it's a leaf node, there's only need to print current node.
      */
-    string to_string() {
+    virtual string to_string() {
         return " HLf[c: " + std::to_string(_c) + ", f: " + std::to_string(_frec) + "] ";
     }
 };

@@ -40,7 +40,7 @@ public:
      * Returns a string representation of tree's inorder traversal
      * This method should never be called. The good ones are inside HuffmanLeaf and HuffmanBranch
      */
-    string to_string() {
+    virtual string to_string() {
         return " HTr[frec: " + std::to_string(_frec) + "] ";
     }
     

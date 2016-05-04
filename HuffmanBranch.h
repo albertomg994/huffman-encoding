@@ -38,7 +38,7 @@ public:
     /**
      * Returns a string representation of tree's inorder traversal
      */
-    string to_string() {
+    virtual string to_string() {
         return " HBr[frec: " + std::to_string(_frec) + "] " + _iz->to_string() + _dr->to_string();
     }
 };
