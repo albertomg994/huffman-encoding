@@ -15,11 +15,6 @@
 using namespace std;
 
 class HuffmanTree {
-private:
-    
-    HuffmanTree* _iz;
-    HuffmanTree* _dr;
-    
 protected:
     
     int _frec;
@@ -27,28 +22,50 @@ protected:
 public:
     
     // Constructors
-    HuffmanTree() : _iz(NULL), _frec(0), _dr(NULL) {}
-    HuffmanTree(int frec) : _iz(NULL), _frec(frec), _dr(NULL) {}
-    HuffmanTree(HuffmanTree* iz, HuffmanTree* dr) : _iz(iz), _dr(dr) {
+    HuffmanTree(int frec = 0) : _frec(frec) {}
+    HuffmanTree(HuffmanTree* iz, HuffmanTree* dr) {
         _frec = iz->_frec + dr->_frec;
     }
     
-    // Destructor
-    // ~HuffmanTree() {
-    //     ...
-    // }
+    // Destructor - Should never be used. The good ones are ~HuffmanBranch() and ~HuffmanLeaf()
+    ~HuffmanTree() {
+        // Default is OK
+    }
     
     // Getters
     char frec() const { return _frec; }
-    HuffmanTree* hijoIz() const { return _iz; }
-    HuffmanTree* hijoDr() const { return _dr; }
+
     
     /**
      * Returns a string representation of tree's inorder traversal
+     * This method should never be called. The good ones are inside HuffmanLeaf and HuffmanBranch
      */
     string to_string() {
-        return " HTr[frec: " + std::to_string(_frec) + "] " + _iz->to_string() + _dr->to_string();
+        return " HTr[frec: " + std::to_string(_frec) + "] ";
     }
+    
+    /**
+     * Sobrecarga de los distintos operadores de comparación
+     * Redefinimos los operadores al revés, porque queremos cojer los dos de MENOR FRECUENCIA
+     */
+    // *********************************************************************** //
+    // Como al final usé la clase comparadora de punteros esto no es necesario //
+    // *********************************************************************** //
+    /*bool operator> (const HuffmanTree &other) {
+        return _frec < other._frec;
+    }
+    
+    bool operator>= (const HuffmanTree &other) {
+        return _frec <= other._frec;
+    }
+    
+    bool operator< (const HuffmanTree &other) {
+        return _frec > other._frec;
+    }
+    
+    bool operator<= (const HuffmanTree &other) {
+        return _frec >= other._frec;
+    }*/
 };
 
 #endif /* HuffmanTree_h */

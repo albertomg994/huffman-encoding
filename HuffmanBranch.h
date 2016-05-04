@@ -17,16 +17,23 @@ using namespace std;
 
 class HuffmanBranch : public HuffmanTree {
 private:
-    // ...
+
+    HuffmanTree* _iz;
+    HuffmanTree* _dr;
+    
 public:
     
     // Constructor
-    HuffmanBranch(HuffmanTree* iz, HuffmanTree* dr) : HuffmanTree(iz, dr) {}
+    HuffmanBranch(HuffmanTree* iz, HuffmanTree* dr) : HuffmanTree(iz, dr), _iz(iz), _dr(dr) {}
     
     // Destructor
     // ~HuffmanBranch() {
-    //     ...
+    //     ...¿?
     // }
+    
+    // Getters
+    HuffmanTree* hijoIz() const { return _iz; }
+    HuffmanTree* hijoDr() const { return _dr; }
     
     /**
      * Returns a string representation of tree's inorder traversal

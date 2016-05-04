@@ -15,6 +15,7 @@
 #include "HuffmanBranch.h"
 #include "HuffmanLeaf.h"
 #include <queue>
+#include <vector>
 
 #define TABLE_SIZE 128
 
@@ -26,6 +27,7 @@ using namespace std;
  * with (code < 0) || (code >= 128) must be rejected by the algorithm.
  */
 class UnsupportedCharacterException {};
+class DebugException {};
 
 /**
  * Class used to compare HuffmanTree nodes in the stl::priority_queue variable
@@ -33,10 +35,36 @@ class UnsupportedCharacterException {};
  */
 class CompareHuffmanNodes {
 public:
-    bool operator() (HuffmanTree ht1, HuffmanTree ht2) {
+    bool operator() (const HuffmanTree &ht1, const HuffmanTree &ht2) const {
         return (ht1.frec() >= ht2.frec());
     }
 };
+
+/**
+ * Otro comparador de HuffmanTrees pero orientado a punteros
+ */
+class CompareHuffmanNodesPointers {
+public:
+    bool operator() (const HuffmanTree* ht1, const HuffmanTree* ht2) const {
+        return (ht1->frec() >= ht2->frec());
+    }
+};
+
+/**
+ * Prints content of a std::priority_queue
+ * NOTE: since the only way to iterate through a std::priority_queue is making
+ * succesive 'pops', the parameter is passed by copy.
+ */
+void print_pq(std::priority_queue<HuffmanTree*, std::vector<HuffmanTree*>, CompareHuffmanNodesPointers> pq){
+    HuffmanTree* ptr;
+    cout << "print_pq()..." << endl;
+    while(!pq.empty()) {
+        ptr = pq.top();
+        cout << ptr->to_string() << ' ';
+        pq.pop();
+    }
+    cout << endl;
+}
 
 /**
  * Main class used to encode/decode text following the Huffman encoding algorithm.
@@ -54,15 +82,25 @@ public:
         string coded_text;
         
         init_frec_table(frec_table);
-        
         print_frec_table(frec_table, false);
         
+        // 1st. step
+        cout << "Inicio 1er paso. Generando la tabla de frecuencias." << endl;
         text_to_frec_table(plain_text, frec_table);
-        
+        //cout << "Imprimiendo la tabla de frecuencias:" << endl;
         print_frec_table(frec_table, false);
+        cout << "Final 1er paso. Generada la tabla de frecuencias." << endl << endl;
         
+        // 2nd. step
+        cout << "Inicio 2o paso. Generando el HuffmanTree." << endl;
         HuffmanTree* ht = frec_table_to_HuffTree(frec_table);
+        cout << ht->to_string() << endl;
+        cout << "Final 2o paso. Generado el HuffmanTree." << endl << endl;
+        
+        // 3rd. step
         huffTree_to_code_table(*ht, code_table);
+        
+        // 4th. step
         coded_text = code_table_to_coded_text(code_table);
         
         return coded_text;
@@ -112,21 +150,52 @@ private:
         //  1. Recorro la tabla de frecuencias, para cada letra hago un new Hoja() con esa letra y esa frecuencia, y lo guardo en la cola de prioridad (es una cola de prioridad de árboles)
         //  2. Un bucle que (mientras queden elementos en la cola con prioridad), coge 2 y forma un árbol con esos dos, y vuelve a insertarlo.
         
-        priority_queue<HuffmanTree*, CompareHuffmanNodes> pq;
+        // Opción 4 - Teniendo en cuenta que he redefinido el operador de comparación
+        
+        /*************************************************************************************/
+        /* Que no la instanciemos con punteros, pq el operadro de orden cree que no funciona */
+        //bool operator()(const HuffmanTree &h1, const HuffmanTree &h2) {
+            
+        //}
+        //std::priority_queue<HuffmanTree> pq; // Hacerlo así
+        /*************************************************************************************/
+        
+        //std::priority_queue<HuffmanTree*> pq;
+        
+        // Versión instanciando con punteros y un comparador orientado a punteros
+        std::priority_queue<HuffmanTree*, std::vector<HuffmanTree*>, CompareHuffmanNodesPointers> pq;
         
         // Rellenamos la cola de prioridad con nodos hoja
         for (int i = 0; i < TABLE_SIZE; i++) {
-            if (frec_table[i] > 0) pq.push(new HuffmanLeaf(i, frec_table[i]));  // NOTA: aquí construyo las hojas
+            if (frec_table[i] > 0) {
+                HuffmanLeaf* hl_aux = new HuffmanLeaf(i, frec_table[i]);
+                //cout << "new HuffmanLeaf(" << i << ", " << frec_table[i] << ") = " << aux->to_string() << endl;
+                pq.push(hl_aux);  // NOTA: aquí construyo las hojas
+                //cout << "Se ha hecho un push de: " << (pq.top())->to_string() << endl;, cuidado el top() está ordenado por prioridad
+            }
         }
         
+        // Imprimimos la cola de prioridad, para depurar:
+        cout << "La cola con prioridad tiene un tamaño de: " << pq.size() << endl;
+        print_pq(pq);
+        if (pq.empty()) throw DebugException();
+        
+        HuffmanBranch* hb_aux;
         while(pq.size() > 1) {
             // Get two elements with highest frequency
             HuffmanTree* frst = pq.top(); pq.pop();
             HuffmanTree* scnd = pq.top(); pq.pop();
             
-            pq.push(new HuffmanBranch(frst, scnd));
+            hb_aux = new HuffmanBranch(frst, scnd);
+            pq.push(hb_aux);
         }
         
+        cout << "Imprimo el único elemento que debería quedar en la cola con prioridad: " << endl;
+        cout << (pq.top())->to_string() << endl;
+        cout << hb_aux->to_string() << endl;
+        // CUIDADO, ÑAPA!!
+
+        //
         return pq.top();
     }
     
@@ -145,14 +214,14 @@ private:
     }
     
     /**
-     * Inicializa la tabla de frecuencias de caracteres toda a 0.
+     * Initializes all frequencies in table to 0.
      */
     static void init_frec_table(int frec_table[TABLE_SIZE]) {
         for (int i = 0; i < TABLE_SIZE; i++) frec_table[i] = 0;
     }
     
     /**
-     * Imprime la tabla de frecuencias
+     * Prints frequencies table
      */
     static void print_frec_table(int frec_table[TABLE_SIZE], bool include_blanks) {
         int i = 0;

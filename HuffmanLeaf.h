@@ -26,9 +26,9 @@ public:
     HuffmanLeaf(char c, int frec) : HuffmanTree(frec), _c(c) {}
     
     // Destructor
-    // ~HuffmanLeaf() {
-    //     ...
-    // }
+    ~HuffmanLeaf() {
+        // Default is OK
+    }
     
     // Getters
     char c() const { return _c; }

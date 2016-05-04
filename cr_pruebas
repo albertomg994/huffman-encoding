@@ -1,0 +1,3 @@
+#!/bin/bash
+g++ -std=c++11 HuffmanTree.h HuffmanBranch.h HuffmanLeaf.h pruebas.cpp
+./a.out
