@@ -190,9 +190,8 @@ private:
             pq.push(hb_aux);
         }
         
-        cout << "Imprimo el único elemento que debería quedar en la cola con prioridad: " << endl;
-        cout << (pq.top())->to_string() << endl;
-        cout << hb_aux->to_string() << endl;
+        //cout << "Imprimo el único elemento que debería quedar en la cola con prioridad: " << endl;
+        //cout << (pq.top())->to_string() << endl;
         // CUIDADO, ÑAPA!!
 
         //
