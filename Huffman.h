@@ -47,7 +47,7 @@ public:
  */
 void print_pq(std::priority_queue<HuffmanTree*, std::vector<HuffmanTree*>, CompareHuffmanNodesPointers> pq){
     HuffmanTree* ptr;
-    cout << " [DEBUG] print_pq(): ";
+    cout << "print_pq(): ";
     while(!pq.empty()) {
         ptr = pq.top();
         cout << ptr->to_string() << ' ';
@@ -72,34 +72,33 @@ public:
         string coded_text;
         
         init_frec_table(frec_table);
-        print_frec_table(frec_table, false);
         
         // 1st. step
         cout << " [DEBUG] Inicio 1er paso. Generando la tabla de frecuencias." << endl;
         cout << " [DEBUG] ------------------------------------------------------------" << endl;
         text_to_frec_table(plain_text, frec_table);
         cout << " [DEBUG] "; print_frec_table(frec_table, false);
-        cout << " [DEBUG] << final 1er paso >>" << endl;
+        cout << " [DEBUG] << final 1er paso >>" << endl << " [DEBUG]" << endl;
         
         // 2nd. step
         cout << " [DEBUG] Inicio 2o paso. Generando el HuffmanTree." << endl;
         cout << " [DEBUG] ------------------------------------------------------------" << endl;
         HuffmanTree* ht = frec_table_to_HuffTree(frec_table);
         cout << " [DEBUG] " << ht->to_string() << endl;
-        cout << " [DEBUG] << final 2o paso >>" << endl;
+        cout << " [DEBUG] << final 2o paso >>" << endl << " [DEBUG]" << endl;
         
         // 3rd. step
         cout << " [DEBUG] Inicio 3er paso. Generando tabla de códigos." << endl;
         cout << " [DEBUG] ------------------------------------------------------------" << endl;
         huffTree_to_code_table(ht, code_table);
-        cout << " [DEBUG] "; print_code_table(code_table);
-        cout << " [DEBUG] << final 3er paso >>" << endl;
+        print_code_table(code_table);
+        cout << " [DEBUG] << final 3er paso >>" << endl << " [DEBUG]" << endl;
         
         // 4th. step
         cout << " [DEBUG] Inicio 4º paso. Sustituyendo caracteres por sus códigos." << endl;
         cout << " [DEBUG] ------------------------------------------------------------" << endl;
         coded_text = code_table_to_coded_text(code_table, plain_text);
-        cout << " [DEBUG] << final 4º paso >>" << endl;
+        cout << " [DEBUG] << final 4º paso >>" << endl << " [DEBUG]" << endl;
         
         return coded_text;
     }
@@ -252,7 +251,7 @@ private:
      * Prints frequencies table
      */
     static void print_frec_table(int frec_table[TABLE_SIZE], bool include_blanks) {
-        cout << " [DEBUG] print_frec_table(): ";
+        cout << "print_frec_table(): ";
         int i = 0;
         for (; i < TABLE_SIZE-1; i++) {
             if (include_blanks || frec_table[i] != 0) cout << "[" << char(i) << "]=" << frec_table[i] << "  ";

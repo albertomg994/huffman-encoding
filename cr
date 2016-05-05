@@ -1,4 +1,9 @@
 #!/bin/bash
-g++ -std=c++11 Huffman.h HuffmanTree.h HuffmanBranch.h HuffmanLeaf.h main.cpp
-./a.out < entrada_simple.in > salida.out
-cat salida.out
+# Compile and run
+./compile
+
+# Run program against input files
+
+./a.out < tests/caso-1.in
+#./a.out < tests/caso-2.in
+#./a.out < tests/caso-3.in

@@ -10,7 +10,7 @@ g++ -std=c++11 main.cpp
 # ------------------------------------------------------------------------------
 
 run_1=true
-run_2=false
+run_2=true
 run_3=false
 
 # Run test 1
@@ -23,7 +23,7 @@ fi
 
 # Run test 2
 if [ "$run_2" = true ] ; then
-    echo "Running test 1..."
+    echo "Running test 2..."
     ./a.out < tests/caso-2.in | grep -v "[DEBUG]" > tmp/caso-2.out
     diff tests/caso-2.out.sample tmp/caso-2.out
     # cat tmp/caso-2.out
@@ -31,7 +31,7 @@ fi
 
 # Run test 3
 if [ "$run_3" = true ] ; then
-    echo "Running test 1..."
+    echo "Running test 3..."
     ./a.out < tests/caso-3.in | grep -v "[DEBUG]" > tmp/caso-3.out
     diff tests/caso-3.out.sample tmp/caso-3.out
     # cat tmp/caso-3.out
