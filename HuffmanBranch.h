@@ -24,7 +24,9 @@ private:
 public:
     
     // Constructor
-    HuffmanBranch(HuffmanTree* iz, HuffmanTree* dr) : HuffmanTree(iz, dr), _iz(iz), _dr(dr) {}
+    HuffmanBranch(HuffmanTree* iz, HuffmanTree* dr) : HuffmanTree(iz, dr), _iz(iz), _dr(dr) {
+        _hoja = false;
+    }
     
     // Destructor
     // ~HuffmanBranch() {

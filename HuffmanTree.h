@@ -18,11 +18,12 @@ class HuffmanTree {
 protected:
     
     int _frec;
+    bool _hoja;
     
 public:
     
     // Constructors
-    HuffmanTree(int frec = 0) : _frec(frec) {}
+    HuffmanTree(int frec = 0) : _frec(frec), _hoja(false) {}
     HuffmanTree(HuffmanTree* iz, HuffmanTree* dr) {
         _frec = iz->_frec + dr->_frec;
     }
@@ -34,6 +35,7 @@ public:
     
     // Getters
     char frec() const { return _frec; }
+    virtual bool esHoja() const { return _hoja; }
 
     
     /**
@@ -43,29 +45,6 @@ public:
     virtual string to_string() {
         return " HTr[frec: " + std::to_string(_frec) + "] ";
     }
-    
-    /**
-     * Sobrecarga de los distintos operadores de comparación
-     * Redefinimos los operadores al revés, porque queremos cojer los dos de MENOR FRECUENCIA
-     */
-    // *********************************************************************** //
-    // Como al final usé la clase comparadora de punteros esto no es necesario //
-    // *********************************************************************** //
-    /*bool operator> (const HuffmanTree &other) {
-        return _frec < other._frec;
-    }
-    
-    bool operator>= (const HuffmanTree &other) {
-        return _frec <= other._frec;
-    }
-    
-    bool operator< (const HuffmanTree &other) {
-        return _frec > other._frec;
-    }
-    
-    bool operator<= (const HuffmanTree &other) {
-        return _frec >= other._frec;
-    }*/
 };
 
 #endif /* HuffmanTree_h */

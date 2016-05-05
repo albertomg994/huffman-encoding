@@ -30,9 +30,10 @@ int main(int argc, const char * argv[]) {
     
     for (int i = 0; i < nCasos; i++) {
         
-        //cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n' );
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n' );
         //getline(cin, plain_text);
-        plain_text = leeCaso();
+        //plain_text = leeCaso();
+        getline(cin, plain_text);
         cout << "------------ Caso " << i+1 << " ------------" << endl;
         cout << "Plain text: " << plain_text << endl;
         coded_text = Huffman::encode(plain_text);

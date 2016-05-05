@@ -15,6 +15,7 @@
 #include "HuffmanBranch.h"
 #include "HuffmanLeaf.h"
 #include <queue>
+#include <list>
 #include <vector>
 
 #define TABLE_SIZE 128
@@ -28,17 +29,6 @@ using namespace std;
  */
 class UnsupportedCharacterException {};
 class DebugException {};
-
-/**
- * Class used to compare HuffmanTree nodes in the stl::priority_queue variable
- * used in 'frec_table_to_HuffTree method'.
- */
-class CompareHuffmanNodes {
-public:
-    bool operator() (const HuffmanTree &ht1, const HuffmanTree &ht2) const {
-        return (ht1.frec() >= ht2.frec());
-    }
-};
 
 /**
  * Otro comparador de HuffmanTrees pero orientado a punteros
@@ -78,7 +68,7 @@ public:
     static string encode(const string &plain_text) {
         
         int frec_table[TABLE_SIZE];
-        int code_table[TABLE_SIZE];
+        list<bool> code_table[TABLE_SIZE];
         string coded_text;
         
         init_frec_table(frec_table);
@@ -98,10 +88,15 @@ public:
         cout << "Final 2o paso. Generado el HuffmanTree." << endl << endl;
         
         // 3rd. step
-        huffTree_to_code_table(*ht, code_table);
+        cout << "Inicio 3er paso. Generando tabla de códigos." << endl;
+        huffTree_to_code_table(ht, code_table);
+        print_code_table(code_table);
+        cout << "Final 3er paso. Tabla de códigos generada." << endl << endl;
         
         // 4th. step
-        coded_text = code_table_to_coded_text(code_table);
+        cout << "Inicio 4º paso. Sustituyendo caracteres por sus códigos." << endl;
+        coded_text = code_table_to_coded_text(code_table, plain_text);
+        cout << "Final 4º paso." << endl << endl;
         
         return coded_text;
     }
@@ -150,18 +145,6 @@ private:
         //  1. Recorro la tabla de frecuencias, para cada letra hago un new Hoja() con esa letra y esa frecuencia, y lo guardo en la cola de prioridad (es una cola de prioridad de árboles)
         //  2. Un bucle que (mientras queden elementos en la cola con prioridad), coge 2 y forma un árbol con esos dos, y vuelve a insertarlo.
         
-        // Opción 4 - Teniendo en cuenta que he redefinido el operador de comparación
-        
-        /*************************************************************************************/
-        /* Que no la instanciemos con punteros, pq el operadro de orden cree que no funciona */
-        //bool operator()(const HuffmanTree &h1, const HuffmanTree &h2) {
-            
-        //}
-        //std::priority_queue<HuffmanTree> pq; // Hacerlo así
-        /*************************************************************************************/
-        
-        //std::priority_queue<HuffmanTree*> pq;
-        
         // Versión instanciando con punteros y un comparador orientado a punteros
         std::priority_queue<HuffmanTree*, std::vector<HuffmanTree*>, CompareHuffmanNodesPointers> pq;
         
@@ -169,15 +152,13 @@ private:
         for (int i = 0; i < TABLE_SIZE; i++) {
             if (frec_table[i] > 0) {
                 HuffmanLeaf* hl_aux = new HuffmanLeaf(i, frec_table[i]);
-                //cout << "new HuffmanLeaf(" << i << ", " << frec_table[i] << ") = " << aux->to_string() << endl;
-                pq.push(hl_aux);  // NOTA: aquí construyo las hojas
-                //cout << "Se ha hecho un push de: " << (pq.top())->to_string() << endl;, cuidado el top() está ordenado por prioridad
+                pq.push(hl_aux);
             }
         }
         
         // Imprimimos la cola de prioridad, para depurar:
         cout << "La cola con prioridad tiene un tamaño de: " << pq.size() << endl;
-        print_pq(pq);
+        //print_pq(pq);
         if (pq.empty()) throw DebugException();
         
         HuffmanBranch* hb_aux;
@@ -189,27 +170,76 @@ private:
             hb_aux = new HuffmanBranch(frst, scnd);
             pq.push(hb_aux);
         }
-        
-        //cout << "Imprimo el único elemento que debería quedar en la cola con prioridad: " << endl;
-        //cout << (pq.top())->to_string() << endl;
-        // CUIDADO, ÑAPA!!
 
-        //
         return pq.top();
     }
     
     /**
+     * Auxiliary recursive function used by huffTree_to_code_table to assign variable legth codes to each
+     * character in the HuffmanTree.
      *
+     * @param ht Pointer to the HuffmanTree
+     * @param current_code Queue which keeps track of our current position in the tree, which will determine
+     *        the code for each leaf node.
+     * @param code_table Array containig all variable-lenth codes.
      */
-    static void huffTree_to_code_table(const HuffmanTree &ht, int code_table[TABLE_SIZE]) {
+    static void getCodesAux(HuffmanTree* ht, list<bool> &current_code, list<bool> code_table[TABLE_SIZE]){
         
+        HuffmanLeaf* hl;
+        HuffmanBranch* hb;
+        
+        // Si es una hoja, guardar current_code como su código
+        if (ht->esHoja()) {
+            hl = (HuffmanLeaf*)ht;
+            char c = hl->c();
+            // Copy current_code into corresponding position of code_table
+            code_table[(int)c].assign(current_code.begin(), current_code.end());
+        }
+        // Si es un nodo 'intermedio' (rama)
+        else {
+            hb = (HuffmanBranch*)ht;
+            // Explorar subárbol izquierdo
+            current_code.push_back(false);
+            getCodesAux(hb->hijoIz(), current_code, code_table);
+            current_code.pop_back();
+            // Explorar subárbol derecho
+            current_code.push_back(true);
+            getCodesAux(hb->hijoDr(), current_code, code_table);
+            current_code.pop_back();
+        }
     }
     
     /**
+     * Obtiene el código de longitud variable para cada carácter a partir de un HuffmanTree
      *
+     * @param ht Puntero al HuffmanTree a partir del cual hay que obtener los códigos para cada carácter.
+     * @param code_table Array de 'queue', donde cada componente es el código para un carácter.
      */
-    static string code_table_to_coded_text(int code_table[TABLE_SIZE]) {
-        return "";
+    static void huffTree_to_code_table(HuffmanTree* ht, list<bool> code_table[TABLE_SIZE]) {
+        // Recorrer el árbol por completo, guardando en cada momento si vamos a la izq o dcha para guardar el código en la tabla
+        list<bool> current_code;
+        getCodesAux(ht, current_code, code_table);
+    }
+    
+    /**
+     * Generates coded text by making a substitution of each character in the plain_text by
+     * its own variable-length code.
+     *
+     * @param code_table Const referene to code_table
+     */
+    static string code_table_to_coded_text(list<bool> code_table[TABLE_SIZE], const string &plain_text) {
+        
+        string ret = "";
+        char curr_char;
+        
+        string::const_iterator it = plain_text.cbegin();
+        while (it != plain_text.cend()) {
+            curr_char = *it;
+            ret.append(char_to_code(curr_char, code_table));
+            it++;
+        }
+        
+        return ret;
     }
     
     /**
@@ -230,6 +260,47 @@ private:
         if (include_blanks || frec_table[i] != 0) cout << "[" << char(i) << "]=" << frec_table[i];
         cout << endl;
     }
+    
+    /**
+     * Prints code_table
+     */
+    static void print_code_table(list<bool> code_table[TABLE_SIZE]) {
+        
+        list<bool>* q_ptr;
+        
+        for (int i = 0; i < TABLE_SIZE; i++) {
+            q_ptr = &(code_table[i]);
+            if (q_ptr != NULL && q_ptr->size()>0) {
+                cout << "code_table[" << i << "]: "; // Podría poner char(i), pero entonces se lía con los tabuladores, EOF, etc. al imprimir
+                list<bool>::const_iterator it = q_ptr->cbegin();
+                while (it != q_ptr->cend()) {
+                    if (*it) cout << "1";
+                    else cout << "0";
+                    it++;
+                }
+                cout << endl;
+            }
+        }
+    }
+    
+    /**
+     * string representation of one variable-length code (i.e. print contents of list<bool>)
+     */
+    static string char_to_code(char c, list<bool> code_table[TABLE_SIZE]) {
+        
+        string ret = "";
+        list<bool>* code = &code_table[c];
+        
+        list<bool>::const_iterator it = code->cbegin();
+        while (it != code->cend()) {
+            if (*it) ret.push_back('1');
+            else ret.push_back('0');
+            it++;
+        }
+        
+        return ret;
+    }
+    
     
 };
 

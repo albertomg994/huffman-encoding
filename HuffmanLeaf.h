@@ -23,7 +23,9 @@ private:
 public:
     
     // Constructor
-    HuffmanLeaf(char c, int frec) : HuffmanTree(frec), _c(c) {}
+    HuffmanLeaf(char c, int frec) : HuffmanTree(frec), _c(c) {
+        _hoja = true;
+    }
     
     // Destructor
     ~HuffmanLeaf() {
