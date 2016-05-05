@@ -67,6 +67,8 @@ public:
      */
     static string encode(const string &plain_text) {
         
+        if (plain_text.empty()) return ""; // Este caso contempla el string vacío
+        
         int frec_table[TABLE_SIZE];
         list<bool> code_table[TABLE_SIZE];
         string coded_text;
