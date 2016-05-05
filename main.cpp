@@ -14,7 +14,6 @@ using namespace std;
 
 string leeCaso() {
     string texto;
-    //cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n' );
     cin.ignore('\n');
     getline(cin, texto);
     return texto;
@@ -29,11 +28,8 @@ int main(int argc, const char * argv[]) {
     cout << " [DEBUG] Hay " << nCasos << " casos en total." << endl << " [DEBUG]" << endl;
     
     for (int i = 0; i < nCasos; i++) {
-        
-        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n' );
-        //getline(cin, plain_text);
-        //plain_text = leeCaso();
         getline(cin, plain_text);
+        cin.ignore();
         cout << " [DEBUG] ==================== Caso " << i+1 << " ====================" << endl;
         cout << " [DEBUG] Plain text: " << plain_text << endl;
         coded_text = Huffman::encode(plain_text);
