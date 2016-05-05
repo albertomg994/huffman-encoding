@@ -29,7 +29,7 @@ int main(int argc, const char * argv[]) {
     
     for (int i = 0; i < nCasos; i++) {
         getline(cin, plain_text);
-        cin.ignore();
+        //cin.ignore();
         cout << " [DEBUG] ==================== Caso " << i+1 << " ====================" << endl;
         cout << " [DEBUG] Plain text: " << plain_text << endl;
         coded_text = Huffman::encode(plain_text);

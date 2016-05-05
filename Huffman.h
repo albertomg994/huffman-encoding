@@ -84,14 +84,14 @@ public:
         cout << " [DEBUG] Inicio 2o paso. Generando el HuffmanTree." << endl;
         cout << " [DEBUG] ------------------------------------------------------------" << endl;
         HuffmanTree* ht = frec_table_to_HuffTree(frec_table);
-        cout << " [DEBUG] " << ht->to_string() << endl;
+        cout << " [DEBUG] Printing HuffmanTree: " << ht->to_string() << endl;
         cout << " [DEBUG] << final 2o paso >>" << endl << " [DEBUG]" << endl;
         
         // 3rd. step
         cout << " [DEBUG] Inicio 3er paso. Generando tabla de códigos." << endl;
         cout << " [DEBUG] ------------------------------------------------------------" << endl;
         huffTree_to_code_table(ht, code_table);
-        print_code_table(code_table);
+        cout << " [DEBUG] Printing code_table: " << endl; print_code_table(code_table);
         cout << " [DEBUG] << final 3er paso >>" << endl << " [DEBUG]" << endl;
         
         // 4th. step
@@ -186,9 +186,13 @@ private:
         HuffmanLeaf* hl;
         HuffmanBranch* hb;
         
+        //cout << "getCodesAux" << endl;
+        
         // Si es una hoja, guardar current_code como su código
         if (ht->esHoja()) {
             hl = (HuffmanLeaf*)ht;
+            //cout << "getCodesAux ha llegado a un nodo hoja: " << hl->to_string() << endl;
+            if (current_code.empty()) current_code.push_back(0); // Este será el código asignado al primer carácter. Hay que inicializar porque si el plain_text solo tiene un caracter peta...
             char c = hl->c();
             // Copy current_code into corresponding position of code_table
             code_table[(int)c].assign(current_code.begin(), current_code.end());
