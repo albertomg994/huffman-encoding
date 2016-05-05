@@ -25,7 +25,7 @@ int main(int argc, const char * argv[]) {
     int nCasos;
     string plain_text, coded_text;
     
-    cin >> nCasos;
+    cin >> nCasos; cin.ignore();
     cout << " [DEBUG] Hay " << nCasos << " casos en total." << endl << " [DEBUG]" << endl;
     
     for (int i = 0; i < nCasos; i++) {
