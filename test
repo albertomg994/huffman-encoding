@@ -1,0 +1,38 @@
+#!/bin/bash
+# Compliles and runs all tests
+# Author: Alberto Miedes Garcés (c) 5/05/2016
+
+# Compile project
+#g++ -std=c++11 Huffman.h HuffmanTree.h HuffmanBranch.h HuffmanLeaf.h main.cpp
+g++ -std=c++11 main.cpp
+
+# Run tests
+# ------------------------------------------------------------------------------
+
+run_1=true
+run_2=false
+run_3=false
+
+# Run test 1
+if [ "$run_1" = true ] ; then
+    echo "Running test 1..."
+    ./a.out < tests/caso-1.in | grep -v "[DEBUG]" > tmp/caso-1.out
+    diff tests/caso-1.out.sample tmp/caso-1.out
+    # cat tmp/caso-1.out
+fi
+
+# Run test 2
+if [ "$run_2" = true ] ; then
+    echo "Running test 1..."
+    ./a.out < tests/caso-2.in | grep -v "[DEBUG]" > tmp/caso-2.out
+    diff tests/caso-2.out.sample tmp/caso-2.out
+    # cat tmp/caso-2.out
+fi
+
+# Run test 3
+if [ "$run_3" = true ] ; then
+    echo "Running test 1..."
+    ./a.out < tests/caso-3.in | grep -v "[DEBUG]" > tmp/caso-3.out
+    diff tests/caso-3.out.sample tmp/caso-3.out
+    # cat tmp/caso-3.out
+fi

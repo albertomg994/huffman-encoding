@@ -47,7 +47,7 @@ public:
  */
 void print_pq(std::priority_queue<HuffmanTree*, std::vector<HuffmanTree*>, CompareHuffmanNodesPointers> pq){
     HuffmanTree* ptr;
-    cout << "print_pq()..." << endl;
+    cout << " [DEBUG] print_pq(): ";
     while(!pq.empty()) {
         ptr = pq.top();
         cout << ptr->to_string() << ' ';
@@ -79,27 +79,27 @@ public:
         cout << " [DEBUG] ------------------------------------------------------------" << endl;
         text_to_frec_table(plain_text, frec_table);
         cout << " [DEBUG] "; print_frec_table(frec_table, false);
-        cout << " [DEBUG] << final 1er paso >>" << endl << endl;
+        cout << " [DEBUG] << final 1er paso >>" << endl;
         
         // 2nd. step
         cout << " [DEBUG] Inicio 2o paso. Generando el HuffmanTree." << endl;
         cout << " [DEBUG] ------------------------------------------------------------" << endl;
         HuffmanTree* ht = frec_table_to_HuffTree(frec_table);
         cout << " [DEBUG] " << ht->to_string() << endl;
-        cout << " [DEBUG] << final 2o paso >>" << endl << endl;
+        cout << " [DEBUG] << final 2o paso >>" << endl;
         
         // 3rd. step
         cout << " [DEBUG] Inicio 3er paso. Generando tabla de códigos." << endl;
         cout << " [DEBUG] ------------------------------------------------------------" << endl;
         huffTree_to_code_table(ht, code_table);
         cout << " [DEBUG] "; print_code_table(code_table);
-        cout << " [DEBUG] << final 3er paso >>" << endl << endl;
+        cout << " [DEBUG] << final 3er paso >>" << endl;
         
         // 4th. step
         cout << " [DEBUG] Inicio 4º paso. Sustituyendo caracteres por sus códigos." << endl;
         cout << " [DEBUG] ------------------------------------------------------------" << endl;
         coded_text = code_table_to_coded_text(code_table, plain_text);
-        cout << " [DEBUG] << final 4º paso >>" << endl << endl;
+        cout << " [DEBUG] << final 4º paso >>" << endl;
         
         return coded_text;
     }
@@ -252,6 +252,7 @@ private:
      * Prints frequencies table
      */
     static void print_frec_table(int frec_table[TABLE_SIZE], bool include_blanks) {
+        cout << " [DEBUG] print_frec_table(): ";
         int i = 0;
         for (; i < TABLE_SIZE-1; i++) {
             if (include_blanks || frec_table[i] != 0) cout << "[" << char(i) << "]=" << frec_table[i] << "  ";
@@ -270,7 +271,7 @@ private:
         for (int i = 0; i < TABLE_SIZE; i++) {
             q_ptr = &(code_table[i]);
             if (q_ptr != NULL && q_ptr->size()>0) {
-                cout << "code_table[" << i << "]: "; // Podría poner char(i), pero entonces se lía con los tabuladores, EOF, etc. al imprimir
+                cout << " [DEBUG] code_table[" << i << "]: "; // Podría poner char(i), pero entonces se lía con los tabuladores, EOF, etc. al imprimir
                 list<bool>::const_iterator it = q_ptr->cbegin();
                 while (it != q_ptr->cend()) {
                     if (*it) cout << "1";

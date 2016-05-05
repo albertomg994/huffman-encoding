@@ -35,9 +35,9 @@ int main(int argc, const char * argv[]) {
         //plain_text = leeCaso();
         getline(cin, plain_text);
         cout << " [DEBUG] ==================== Caso " << i+1 << " ====================" << endl;
-        cout << " [RESULT] Plain text: " << plain_text << endl;
+        cout << " [DEBUG] Plain text: " << plain_text << endl;
         coded_text = Huffman::encode(plain_text);
-        cout << " [RESULT] Coded text: " << coded_text << endl;
+        cout << coded_text << endl;
         cout << " [DEBUG] ================================================" << endl;
     }
     
