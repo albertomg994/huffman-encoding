@@ -26,7 +26,7 @@ int main(int argc, const char * argv[]) {
     string plain_text, coded_text;
     
     cin >> nCasos;
-    cout << "Hay " << nCasos << " casos en total." << endl;
+    cout << " [DEBUG] Hay " << nCasos << " casos en total." << endl;
     
     for (int i = 0; i < nCasos; i++) {
         
@@ -34,11 +34,11 @@ int main(int argc, const char * argv[]) {
         //getline(cin, plain_text);
         //plain_text = leeCaso();
         getline(cin, plain_text);
-        cout << "------------ Caso " << i+1 << " ------------" << endl;
-        cout << "Plain text: " << plain_text << endl;
+        cout << " [DEBUG] ==================== Caso " << i+1 << " ====================" << endl;
+        cout << " [RESULT] Plain text: " << plain_text << endl;
         coded_text = Huffman::encode(plain_text);
-        cout << "Coded text: " << coded_text << endl;
-        cout << "--------------------------------" << endl;
+        cout << " [RESULT] Coded text: " << coded_text << endl;
+        cout << " [DEBUG] ================================================" << endl;
     }
     
     return 0;

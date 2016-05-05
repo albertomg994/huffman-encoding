@@ -75,28 +75,31 @@ public:
         print_frec_table(frec_table, false);
         
         // 1st. step
-        cout << "Inicio 1er paso. Generando la tabla de frecuencias." << endl;
+        cout << " [DEBUG] Inicio 1er paso. Generando la tabla de frecuencias." << endl;
+        cout << " [DEBUG] ------------------------------------------------------------" << endl;
         text_to_frec_table(plain_text, frec_table);
-        //cout << "Imprimiendo la tabla de frecuencias:" << endl;
-        print_frec_table(frec_table, false);
-        cout << "Final 1er paso. Generada la tabla de frecuencias." << endl << endl;
+        cout << " [DEBUG] "; print_frec_table(frec_table, false);
+        cout << " [DEBUG] << final 1er paso >>" << endl << endl;
         
         // 2nd. step
-        cout << "Inicio 2o paso. Generando el HuffmanTree." << endl;
+        cout << " [DEBUG] Inicio 2o paso. Generando el HuffmanTree." << endl;
+        cout << " [DEBUG] ------------------------------------------------------------" << endl;
         HuffmanTree* ht = frec_table_to_HuffTree(frec_table);
-        cout << ht->to_string() << endl;
-        cout << "Final 2o paso. Generado el HuffmanTree." << endl << endl;
+        cout << " [DEBUG] " << ht->to_string() << endl;
+        cout << " [DEBUG] << final 2o paso >>" << endl << endl;
         
         // 3rd. step
-        cout << "Inicio 3er paso. Generando tabla de códigos." << endl;
+        cout << " [DEBUG] Inicio 3er paso. Generando tabla de códigos." << endl;
+        cout << " [DEBUG] ------------------------------------------------------------" << endl;
         huffTree_to_code_table(ht, code_table);
-        print_code_table(code_table);
-        cout << "Final 3er paso. Tabla de códigos generada." << endl << endl;
+        cout << " [DEBUG] "; print_code_table(code_table);
+        cout << " [DEBUG] << final 3er paso >>" << endl << endl;
         
         // 4th. step
-        cout << "Inicio 4º paso. Sustituyendo caracteres por sus códigos." << endl;
+        cout << " [DEBUG] Inicio 4º paso. Sustituyendo caracteres por sus códigos." << endl;
+        cout << " [DEBUG] ------------------------------------------------------------" << endl;
         coded_text = code_table_to_coded_text(code_table, plain_text);
-        cout << "Final 4º paso." << endl << endl;
+        cout << " [DEBUG] << final 4º paso >>" << endl << endl;
         
         return coded_text;
     }
@@ -125,7 +128,6 @@ private:
             ascii = (int)c;
             
             if (ascii < 0 || ascii > 128) throw UnsupportedCharacterException();
-            /*DEBUG*/ //cout << "ASCII[" << c << "]=" << ascii << endl;
             frec_table[ascii]++;
             
             it++;
@@ -133,17 +135,14 @@ private:
     }
     
     /**
-     * A partir de una tabla de frecuencias, obtiene el árbol de Huffman
+     * A partir de una tabla de frecuencias, obtiene el árbol de Huffman.
+     *  1. Recorro la table de frecuencias, para cada letra hago un new Hoja() con esa letra y esa frecuencia, y lo guardo en la cola de prioridad.
+     *  2. Un bucle que (mientras queden elementos en la cola con prioridad), coge 2 y forma un árbol con esos dos, y vuelve a insertarlo.
+     *
      * @param frecTable
      * @return pointer to HuffmanTree root
      */
     static HuffmanTree* frec_table_to_HuffTree(const int frec_table[TABLE_SIZE]) {
-        
-        // Utiliza una cola con prioridad (usaremos las operaciones push y pop).
-        // Vamos metiendo elementos, y cuando pidamos el máximo nos dará el máximo
-        //
-        //  1. Recorro la tabla de frecuencias, para cada letra hago un new Hoja() con esa letra y esa frecuencia, y lo guardo en la cola de prioridad (es una cola de prioridad de árboles)
-        //  2. Un bucle que (mientras queden elementos en la cola con prioridad), coge 2 y forma un árbol con esos dos, y vuelve a insertarlo.
         
         // Versión instanciando con punteros y un comparador orientado a punteros
         std::priority_queue<HuffmanTree*, std::vector<HuffmanTree*>, CompareHuffmanNodesPointers> pq;
@@ -156,9 +155,9 @@ private:
             }
         }
         
-        // Imprimimos la cola de prioridad, para depurar:
-        cout << "La cola con prioridad tiene un tamaño de: " << pq.size() << endl;
-        //print_pq(pq);
+        cout << " [DEBUG] La cola con prioridad tiene un tamaño de: " << pq.size() << endl;
+        cout << " [DEBUG] "; print_pq(pq);
+        
         if (pq.empty()) throw DebugException();
         
         HuffmanBranch* hb_aux;
@@ -287,6 +286,8 @@ private:
      * string representation of one variable-length code (i.e. print contents of list<bool>)
      */
     static string char_to_code(char c, list<bool> code_table[TABLE_SIZE]) {
+        
+        if (int(c) < 0 || int(c) >= 128) throw UnsupportedCharacterException();
         
         string ret = "";
         list<bool>* code = &code_table[c];
