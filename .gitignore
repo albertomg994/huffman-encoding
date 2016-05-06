@@ -1,2 +1,8 @@
-*.out
+.DS_Store
 *.gch
+
+# Test related
+tests/tmp
+
+# Compiled application
+huffman
