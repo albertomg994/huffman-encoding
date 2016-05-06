@@ -2,7 +2,7 @@
 *.gch
 
 # Test related
-tests/tmp
+test/tmp/*
 
 # Compiled application
 huffman
