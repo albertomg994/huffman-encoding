@@ -16,30 +16,30 @@ using namespace std;
 
 class HuffmanTree {
 protected:
-    
+
     int _frec;
     bool _hoja;
-    
+
 public:
-    
+
     // Constructors
     HuffmanTree(int frec = 0) : _frec(frec), _hoja(false) {}
     HuffmanTree(HuffmanTree* iz, HuffmanTree* dr) {
         _frec = iz->_frec + dr->_frec;
     }
-    
+
     // Destructor - Should never be used. The good ones are ~HuffmanBranch() and ~HuffmanLeaf()
     ~HuffmanTree() {
         // Default is OK
     }
-    
+
     // Getters
     char frec() const { return _frec; }
     virtual bool esHoja() const { return _hoja; }
 
-    
+
     /**
-     * Returns a string representation of tree's inorder traversal
+     * Returns a string representation of tree's preorder traversal
      * This method should never be called. The good ones are inside HuffmanLeaf and HuffmanBranch
      */
     virtual string to_string() {

@@ -61,80 +61,112 @@ void print_pq(std::priority_queue<HuffmanTree*, std::vector<HuffmanTree*>, Compa
  */
 class Huffman {
 public:
-    
+
     /**
      * @return encoded text
      */
     static string encode(const string &plain_text) {
-        
+
         if (plain_text.empty()) return ""; // Este caso contempla el string vacío
-        
+
         int frec_table[TABLE_SIZE];
         list<bool> code_table[TABLE_SIZE];
         string coded_text;
-        
+
         init_frec_table(frec_table);
-        
+
         // 1st. step
         cout << " [DEBUG] Inicio 1er paso. Generando la tabla de frecuencias." << endl;
         cout << " [DEBUG] ------------------------------------------------------------" << endl;
         text_to_frec_table(plain_text, frec_table);
         cout << " [DEBUG] "; print_frec_table(frec_table, false);
         cout << " [DEBUG] << final 1er paso >>" << endl << " [DEBUG]" << endl;
-        
+
         // 2nd. step
         cout << " [DEBUG] Inicio 2o paso. Generando el HuffmanTree." << endl;
         cout << " [DEBUG] ------------------------------------------------------------" << endl;
         HuffmanTree* ht = frec_table_to_HuffTree(frec_table);
         cout << " [DEBUG] Printing HuffmanTree: " << ht->to_string() << endl;
         cout << " [DEBUG] << final 2o paso >>" << endl << " [DEBUG]" << endl;
-        
+
         // 3rd. step
         cout << " [DEBUG] Inicio 3er paso. Generando tabla de códigos." << endl;
         cout << " [DEBUG] ------------------------------------------------------------" << endl;
         huffTree_to_code_table(ht, code_table);
         cout << " [DEBUG] Printing code_table: " << endl; print_code_table(code_table);
         cout << " [DEBUG] << final 3er paso >>" << endl << " [DEBUG]" << endl;
-        
+
         // 4th. step
         cout << " [DEBUG] Inicio 4º paso. Sustituyendo caracteres por sus códigos." << endl;
         cout << " [DEBUG] ------------------------------------------------------------" << endl;
         coded_text = code_table_to_coded_text(code_table, plain_text);
         cout << " [DEBUG] << final 4º paso >>" << endl << " [DEBUG]" << endl;
-        
+
         return coded_text;
     }
-    
+
     /**
      * @return decoded text
      */
-    static string decode(const string &encoded_text) {
-        return "<plain text>";
+    static string decode(const string &encoded_text, HuffmanTree &ht) {
+
+        string decoded_text = "";
+        HuffmanTree* tree_position = &ht;
+
+        cout << "1" << endl;
+        // A medida que avanzamos por los 0's y 1's nos vamos desplazando por el árbol
+        string::const_iterator it = encoded_text.cbegin();
+
+        cout << "2" << endl;
+        while (it != encoded_text.cend()) {
+
+            cout << "3" << endl;
+
+            if (tree_position->esHoja()) {
+                // Realizar sustitución
+                HuffmanLeaf* hl = (HuffmanLeaf*)tree_position;
+                cout << "Estoy en una hoja" << endl;
+                decoded_text.push_back(hl->c());
+                // Devolver el puntero al inicio del árbol
+                tree_position = &ht;
+            }
+            else {
+                cout << "Estoy en una rama" << endl;
+                // Desplazarme a la izq o dr. en función del si es 0 o 1
+                if (*it == '0')
+                    tree_position = ((HuffmanBranch*)tree_position)->hijoIz();
+                else    // *it == '1'
+                    tree_position = ((HuffmanBranch*)tree_position)->hijoDr();
+            }
+            // Avanzar al siguiente carácter del texto cifrado
+            it++;
+        }
+        return decoded_text;
     }
-    
+
 private:
-    
+
     /**
      * A partir de un texto plano, rellena su tabla de frecuencias.
      * @param s String que contiene el texto sin codificar
      * @param frecTable Tabla de frecuencias de caracteres (los arrays son siempre referencias en C++)
      */
     static void text_to_frec_table(const string &s, int frec_table[TABLE_SIZE]) {
-        
+
         char c; int ascii;
         string::const_iterator it = s.cbegin();
-        
+
         while (it != s.cend()) {
             c = *it;
             ascii = (int)c;
-            
+
             if (ascii < 0 || ascii > 128) throw UnsupportedCharacterException();
             frec_table[ascii]++;
-            
+
             it++;
         }
     }
-    
+
     /**
      * A partir de una tabla de frecuencias, obtiene el árbol de Huffman.
      *  1. Recorro la table de frecuencias, para cada letra hago un new Hoja() con esa letra y esa frecuencia, y lo guardo en la cola de prioridad.
@@ -144,10 +176,10 @@ private:
      * @return pointer to HuffmanTree root
      */
     static HuffmanTree* frec_table_to_HuffTree(const int frec_table[TABLE_SIZE]) {
-        
+
         // Versión instanciando con punteros y un comparador orientado a punteros
         std::priority_queue<HuffmanTree*, std::vector<HuffmanTree*>, CompareHuffmanNodesPointers> pq;
-        
+
         // Rellenamos la cola de prioridad con nodos hoja
         for (int i = 0; i < TABLE_SIZE; i++) {
             if (frec_table[i] > 0) {
@@ -155,25 +187,25 @@ private:
                 pq.push(hl_aux);
             }
         }
-        
+
         cout << " [DEBUG] La cola con prioridad tiene un tamaño de: " << pq.size() << endl;
         cout << " [DEBUG] "; print_pq(pq);
-        
+
         if (pq.empty()) throw DebugException();
-        
+
         HuffmanBranch* hb_aux;
         while(pq.size() > 1) {
             // Get two elements with highest frequency
             HuffmanTree* frst = pq.top(); pq.pop();
             HuffmanTree* scnd = pq.top(); pq.pop();
-            
+
             hb_aux = new HuffmanBranch(frst, scnd);
             pq.push(hb_aux);
         }
 
         return pq.top();
     }
-    
+
     /**
      * Auxiliary recursive function used by huffTree_to_code_table to assign variable legth codes to each
      * character in the HuffmanTree.
@@ -184,12 +216,12 @@ private:
      * @param code_table Array containig all variable-lenth codes.
      */
     static void getCodesAux(HuffmanTree* ht, list<bool> &current_code, list<bool> code_table[TABLE_SIZE]){
-        
+
         HuffmanLeaf* hl;
         HuffmanBranch* hb;
-        
+
         //cout << "getCodesAux" << endl;
-        
+
         // Si es una hoja, guardar current_code como su código
         if (ht->esHoja()) {
             hl = (HuffmanLeaf*)ht;
@@ -212,7 +244,7 @@ private:
             current_code.pop_back();
         }
     }
-    
+
     /**
      * Obtiene el código de longitud variable para cada carácter a partir de un HuffmanTree
      *
@@ -224,7 +256,7 @@ private:
         list<bool> current_code;
         getCodesAux(ht, current_code, code_table);
     }
-    
+
     /**
      * Generates coded text by making a substitution of each character in the plain_text by
      * its own variable-length code.
@@ -232,27 +264,27 @@ private:
      * @param code_table Const referene to code_table
      */
     static string code_table_to_coded_text(list<bool> code_table[TABLE_SIZE], const string &plain_text) {
-        
+
         string ret = "";
         char curr_char;
-        
+
         string::const_iterator it = plain_text.cbegin();
         while (it != plain_text.cend()) {
             curr_char = *it;
             ret.append(char_to_code(curr_char, code_table));
             it++;
         }
-        
+
         return ret;
     }
-    
+
     /**
      * Initializes all frequencies in table to 0.
      */
     static void init_frec_table(int frec_table[TABLE_SIZE]) {
         for (int i = 0; i < TABLE_SIZE; i++) frec_table[i] = 0;
     }
-    
+
     /**
      * Prints frequencies table
      */
@@ -265,14 +297,14 @@ private:
         if (include_blanks || frec_table[i] != 0) cout << "[" << char(i) << "]=" << frec_table[i];
         cout << endl;
     }
-    
+
     /**
      * Prints code_table
      */
     static void print_code_table(list<bool> code_table[TABLE_SIZE]) {
-        
+
         list<bool>* q_ptr;
-        
+
         for (int i = 0; i < TABLE_SIZE; i++) {
             q_ptr = &(code_table[i]);
             if (q_ptr != NULL && q_ptr->size()>0) {
@@ -287,28 +319,26 @@ private:
             }
         }
     }
-    
+
     /**
      * string representation of one variable-length code (i.e. print contents of list<bool>)
      */
     static string char_to_code(char c, list<bool> code_table[TABLE_SIZE]) {
-        
+
         if (int(c) < 0 || int(c) >= 128) throw UnsupportedCharacterException();
-        
+
         string ret = "";
         list<bool>* code = &code_table[c];
-        
+
         list<bool>::const_iterator it = code->cbegin();
         while (it != code->cend()) {
             if (*it) ret.push_back('1');
             else ret.push_back('0');
             it++;
         }
-        
+
         return ret;
     }
-    
-    
 };
 
 #endif /* Huffman_h */

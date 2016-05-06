@@ -29,29 +29,37 @@ dec_simple_1=false
 # Run test 1
 if [ "$enc_caso_1" = true ] ; then
     echo "Running encoding test 1..."
-    ./huffman_test < encode/caso-1.in | grep -v "[DEBUG]" > tmp/caso-1.out
+    ./huffman_test encode < encode/caso-1.in | grep -v "[DEBUG]" > tmp/caso-1.out
     diff encode/caso-1.out.sample tmp/caso-1.out
+else
+    echo "Encoding test 1 skipped"
 fi
 
 # Run test 2
 if [ "$enc_caso_2" = true ] ; then
     echo "Running encoding test 2..."
-    ./huffman_test < encode/caso-2.in | grep -v "[DEBUG]" > tmp/caso-2.out
+    ./huffman_test encode < encode/caso-2.in | grep -v "[DEBUG]" > tmp/caso-2.out
     diff encode/caso-2.out.sample tmp/caso-2.out
+else
+    echo "Encoding test 2 skipped"
 fi
 
 # Run test 3
 if [ "$enc_caso_3" = true ] ; then
     echo "Running encoding test 3..."
-    ./huffman_test < encode/caso-3.in | grep -v "[DEBUG]" > tmp/caso-3.out
+    ./huffman_test encode < encode/caso-3.in | grep -v "[DEBUG]" > tmp/caso-3.out
     diff encode/caso-3.out.sample tmp/caso-3.out
+else
+    echo "Encoding test 3 skipped"
 fi
 
 # Run test 4
 if [ "$enc_caso_4" = true ] ; then
     echo "Running encoding test 4..."
-    ./huffman_test < encode/caso-4.in | grep -v "[DEBUG]" > tmp/caso-4.out
+    ./huffman_test encode < encode/caso-4.in | grep -v "[DEBUG]" > tmp/caso-4.out
     diff encode/caso-4.out.sample tmp/caso-4.out
+else
+  echo "Encoding test 4 skipped"
 fi
 
 # Run decoding tests
@@ -60,8 +68,10 @@ fi
 # Run test 1
 if [ "$dec_simple_1" = true ] ; then
     echo "Running decoding test 1..."
-    ./huffman_test < deencode/decode-simple-1.in | grep -v "[DEBUG]" > tmp/decode-simple-1.out
+    ./huffman_test decode < deencode/decode-simple-1.in | grep -v "[DEBUG]" > tmp/decode-simple-1.out
     diff decode/decode-simple-1.out.sample tmp/decode-simple-1.out
+else
+    echo "Decoding test 1 skipped"
 fi
 
 # Cleaning
