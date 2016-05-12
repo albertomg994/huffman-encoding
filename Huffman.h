@@ -24,14 +24,14 @@ using namespace std;
 
 /**
  * Because whe use a fixed size array as the frequency table for each character,
- * whe only support the original ASCII talbe characters (128). Thus, characters
+ * we only support the original ASCII talbe characters (128). Thus, characters
  * with (code < 0) || (code >= 128) must be rejected by the algorithm.
  */
 class UnsupportedCharacterException {};
 class DebugException {};
 
 /**
- * Otro comparador de HuffmanTrees pero orientado a punteros
+ * HuffmanTree pointer comparator to be used in std::priority_queue
  */
 class CompareHuffmanNodesPointers {
 public:
@@ -106,6 +106,7 @@ public:
     }
 
     /**
+     * (!!) NOTE: Not fully working
      * @return decoded text
      */
     static string decode(const string &encoded_text, HuffmanTree &ht) {
@@ -113,25 +114,21 @@ public:
         string decoded_text = "";
         HuffmanTree* tree_position = &ht;
 
-        cout << "1" << endl;
         // A medida que avanzamos por los 0's y 1's nos vamos desplazando por el árbol
         string::const_iterator it = encoded_text.cbegin();
 
-        cout << "2" << endl;
         while (it != encoded_text.cend()) {
-
-            cout << "3" << endl;
 
             if (tree_position->esHoja()) {
                 // Realizar sustitución
                 HuffmanLeaf* hl = (HuffmanLeaf*)tree_position;
-                cout << "Estoy en una hoja" << endl;
+                //cout << "Estoy en una hoja" << endl;
                 decoded_text.push_back(hl->c());
                 // Devolver el puntero al inicio del árbol
                 tree_position = &ht;
             }
             else {
-                cout << "Estoy en una rama" << endl;
+                //cout << "Estoy en una rama" << endl;
                 // Desplazarme a la izq o dr. en función del si es 0 o 1
                 if (*it == '0')
                     tree_position = ((HuffmanBranch*)tree_position)->hijoIz();
